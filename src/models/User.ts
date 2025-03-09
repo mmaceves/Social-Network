@@ -3,23 +3,8 @@ import { Schema, model, type Document } from 'mongoose';
 interface User extends Document {
     userName: string;
     email: string;
-    thoughts: [
-    {
-        _id: {
-            type: Schema.Types.ObjectId,
-            ref: 'Thought'
-        }
-    }
-];    
-    friends: [
-    {
-        _id: {
-            type: Schema.Types.ObjectId,
-            ref: 'User'
-        }
-        
-    }
-    ];
+    thoughts: [];    
+    friends: [];
     friendCount: number;
 }
 
