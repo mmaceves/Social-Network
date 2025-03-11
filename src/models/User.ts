@@ -1,29 +1,36 @@
-import { Schema, model, type Document } from 'mongoose';
+import { Schema, model, Document } from 'mongoose';
 
-interface User extends Document {
+interface IUser extends Document {
     userName: string;
     email: string;
-    thoughts: [];    
-    friends: [];
+    thoughts?: [];    
+    friends?: [];
     friendCount: number;
 }
 
-const userSchema = new Schema<User>({
-    userName: { type: String, required: true, unique: true, trim: true },
-    email: { type: String, required: true, unique: true },
+const userSchema = new Schema<IUser>({
+    userName: { 
+        type: String, 
+        required: true, 
+        unique: true, 
+        trim: true 
+    },
+    email: { 
+        type: String, 
+        required: true, 
+        unique: true,
+        trim: true
+    },
     thoughts: [{
-        _id: {
             type: Schema.Types.ObjectId,
             ref: 'Thought'
-        }
     }],
     friends: [{
-        _id: {
             type: Schema.Types.ObjectId,
             ref: 'User'
-        }
     }]
-}, {
+}, 
+{
     toJSON: {
         virtuals: true
     },
@@ -31,10 +38,10 @@ const userSchema = new Schema<User>({
 });
 
 userSchema.virtual('friendCount').get(function() {
-    return this.friends.length;
+    return this.friends?.length;
 });
 
-const User = model<User>('User', userSchema);
+const User = model ('user', userSchema);
 
 export default User;
 

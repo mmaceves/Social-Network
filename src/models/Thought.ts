@@ -1,18 +1,19 @@
-import { Schema, Types, model, type Document } from 'mongoose';
+import { Schema, Types, model, Document } from 'mongoose';
 
 interface IThought extends Document {
     thoughtText: string;
     createdAt: Date;
-    username: string;
-    reactions: [];
+    userName: string;
+    userId: Types.ObjectId;
+    reactions: IReaction[];
     reactionCount: number; 
 }
 
 interface IReaction extends Document {
-    reactionId: Schema.Types.ObjectId;
+    reactionId: Types.ObjectId;
     reactionBody: string;
-    username: string;
-    createdAt: Date;
+    userName: string;
+    createdAt?: Date;
 }
 
 const reactionSchema = new Schema<IReaction>(
@@ -26,13 +27,14 @@ const reactionSchema = new Schema<IReaction>(
             required: true,
             maxLength: 280,
         },
-        username: {
+        userName: {
             type: String,
             required: true,
         },
         createdAt: {
             type: Date,
             default: Date.now,
+            get: (timestamp: number) => new Date(timestamp).toLocaleString(),
         },
     },
     {
@@ -55,10 +57,16 @@ const thoughtSchema = new Schema<IThought>(
             type: Date,
             default: Date.now,
         },
-        username: {
+        userName: {
             type: String,
             required: true,
         },
+        userId: {
+            type: Schema.Types.ObjectId,
+            ref: 'User',
+            required: true,
+        },
+
         reactions: [reactionSchema],
     },
     {
@@ -69,9 +77,9 @@ const thoughtSchema = new Schema<IThought>(
     }
 );
 thoughtSchema.virtual('reactionCount').get(function () {
-    return this.reactions.length;
+    return this.reactions?.length;
 });
 
-const Thought = model<IThought>('Thought', thoughtSchema);
+const Thought = model ('thought', thoughtSchema);
 
 export default Thought;

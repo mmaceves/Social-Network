@@ -14,11 +14,10 @@ export const getAllThoughts = async(_req: Request, res: Response) => {
 }
 
 export const getThoughtsById = async (req: Request, res: Response) => {
-    const { thoughtId } = req.params;
     try {
-      const user = await Thought.findById(thoughtId);
-      if(user) {
-        res.json(user);
+      const thought = await Thought.findById(req.params.thoughtId);
+      if(thought) {
+        res.json(thought);
       } else {
         res.status(404).json({
           message: 'Thought not found'
@@ -32,10 +31,11 @@ export const getThoughtsById = async (req: Request, res: Response) => {
   };
 
 export const createThoughts = async (req: Request, res: Response) => {
-    const { thought, userId } = req.body;
-    try {
+  try {
+      const { userName, thoughtText, userId } = req.body;
       const newThought = await Thought.create({
-        thought
+        userName,
+        thoughtText
       });
 
       await User.findByIdAndUpdate(
@@ -121,12 +121,12 @@ export const deleteThoughts = async (req: Request, res: Response) => {
       );
 
       if (!thought) {
-        res.status(404).json({ message: 'No thought with this id!' });
+        return res.status(404).json({ message: 'No thought with this id!' });
       }
 
-      res.json(thought)
+      return res.json(thought)
     } catch (error: any) {
-      res.status(400).json({
+      return res.status(400).json({
         message: error.message
       });
     }
