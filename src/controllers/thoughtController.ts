@@ -35,7 +35,8 @@ export const createThoughts = async (req: Request, res: Response) => {
       const { userName, thoughtText, userId } = req.body;
       const newThought = await Thought.create({
         userName,
-        thoughtText
+        thoughtText,
+        userId
       });
 
       await User.findByIdAndUpdate(
